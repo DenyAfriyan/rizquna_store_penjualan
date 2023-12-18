@@ -34,7 +34,7 @@ class ReportController extends Controller
          $end_date_limbah_masuk = $end_date_limbah_masuk." 23:59:59";
          $start_date_limbah_keluar = $start_date_limbah_keluar." 00:00:00";
          $end_date_limbah_keluar = $end_date_limbah_keluar." 23:59:59";
-      
+
 
          $rowperpage = $request->get("length"); // Rows display per page
          $columnIndex_arr = $request->get('order');
@@ -45,69 +45,21 @@ class ReportController extends Controller
          $columnName = $columnName_arr[$columnIndex]['data']; // Column name
          $columnSortOrder = $order_arr[0]['dir']; // asc or desc
          $searchValue = $search_arr['value']; // Search value
-         
-   
+         $jenis_limbah = $request->jenis_limbah ?? '';
+
+
          // Total records
          $totalRecords = DB::table('jenis_limbah')
          ->leftJoin('sisa','sisa.jenis_limbah_id','=', 'jenis_limbah.id')
          ->leftJoin('penerimaan','sisa.id','=', 'penerimaan.sisa_id')
          ->leftJoin('pengeluaran','sisa.id','=', 'pengeluaran.sisa_id')
          ->when(
-          function ($query) {
-            return $query->whereNotNull('pengeluaran.tanggal_keluar');
-          },
-          function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
-              // Add additional conditions or other where clauses if needed
-              return $query->whereBetween('pengeluaran.tanggal_keluar',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
-          }
-        )
-        ->when(
-          function ($query) {
-            return $query->orWhereNotNull('penerimaan.tanggal_masuk');
-          },
-          function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
-              // Add additional conditions or other where clauses if needed
-              return $query->whereBetween('penerimaan.tanggal_masuk',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
-          }
-        )
-         ->whereNotNull('sisa.id')
-         ->count();
-         $totalRecordswithFilter = DB::table('jenis_limbah')
-         ->leftJoin('sisa','sisa.jenis_limbah_id','=', 'jenis_limbah.id')
-         ->leftJoin('penerimaan','sisa.id','=', 'penerimaan.sisa_id')
-         ->leftJoin('pengeluaran','sisa.id','=', 'pengeluaran.sisa_id')
-         ->whereNotNull('sisa.id')
-         ->when(
-          function ($query) {
-            return $query->whereNotNull('pengeluaran.tanggal_keluar');
-          },
-          function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
-              // Add additional conditions or other where clauses if needed
-              return $query->whereBetween('pengeluaran.tanggal_keluar',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
-          }
-        )
-        ->when(
-          function ($query) {
-            return $query->orWhereNotNull('penerimaan.tanggal_masuk');
-          },
-          function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
-              // Add additional conditions or other where clauses if needed
-              return $query->whereBetween('penerimaan.tanggal_masuk',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
-          }
-        )
-         ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
-         ->count();
-
-         // Fetch records
-          $records  = DB::table('sisa')
-          ->select('sisa.id as sisa_id','jenis_limbah.name as jenis_limbah_name', 'penerimaan.tanggal_masuk',
-          'sumber_limbah.name as sumber_limbah_name',
-          'penerimaan.jumlah_limbah_masuk', 'penerimaan.maksimal_penyimpanan',
-          'pengeluaran.tanggal_keluar', 'vendors.name as vendors_name',
-          'pengeluaran.jumlah_limbah_keluar',
-          'pengeluaran.bukti_nomor_dokumen',
-          'sisa.sisa_akhir',
-          'sisa.jenis_transaksi')
+            $jenis_limbah != '',
+            function ($query) use ($jenis_limbah){
+                // Add additional conditions or other where clauses if needed
+                return $query->where('jenis_limbah.id',$jenis_limbah);
+            }
+          )
           ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
           ->whereNotNull('sisa.id')
           // ->where(function ($query) use ($start_date_limbah_keluar,$end_date_limbah_keluar){
@@ -132,6 +84,112 @@ class ReportController extends Controller
                 return $query->whereBetween('penerimaan.tanggal_masuk',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
             }
           )
+          ->when(
+            $jenis_limbah != '',
+            function ($query) use ($jenis_limbah){
+                // Add additional conditions or other where clauses if needed
+                return $query->where('jenis_limbah.id',$jenis_limbah);
+            }
+          )
+          ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
+          ->whereNotNull('sisa.id')
+         ->count();
+         $totalRecordswithFilter = DB::table('jenis_limbah')
+         ->leftJoin('sisa','sisa.jenis_limbah_id','=', 'jenis_limbah.id')
+         ->leftJoin('penerimaan','sisa.id','=', 'penerimaan.sisa_id')
+         ->leftJoin('pengeluaran','sisa.id','=', 'pengeluaran.sisa_id')
+         ->when(
+            $jenis_limbah != '',
+            function ($query) use ($jenis_limbah){
+                // Add additional conditions or other where clauses if needed
+                return $query->where('jenis_limbah.id',$jenis_limbah);
+            }
+          )
+          ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
+          ->whereNotNull('sisa.id')
+          // ->where(function ($query) use ($start_date_limbah_keluar,$end_date_limbah_keluar){
+          //   $query->whereNotNull('pengeluaran.tanggal_keluar')
+          //         ->where('title', '=', 'Admin');
+          // })
+          ->when(
+            function ($query) {
+              return $query->whereNotNull('pengeluaran.tanggal_keluar');
+            },
+            function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
+                // Add additional conditions or other where clauses if needed
+                return $query->whereBetween('pengeluaran.tanggal_keluar',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
+            }
+          )
+          ->when(
+            function ($query) {
+              return $query->orWhereNotNull('penerimaan.tanggal_masuk');
+            },
+            function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
+                // Add additional conditions or other where clauses if needed
+                return $query->whereBetween('penerimaan.tanggal_masuk',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
+            }
+          )
+          ->when(
+            $jenis_limbah != '',
+            function ($query) use ($jenis_limbah){
+                // Add additional conditions or other where clauses if needed
+                return $query->where('jenis_limbah.id',$jenis_limbah);
+            }
+          )
+          ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
+          ->whereNotNull('sisa.id')
+         ->count();
+
+         // Fetch records
+          $records  = DB::table('sisa')
+          ->select('sisa.id as sisa_id','jenis_limbah.name as jenis_limbah_name', 'penerimaan.tanggal_masuk',
+          'sumber_limbah.name as sumber_limbah_name',
+          'penerimaan.jumlah_limbah_masuk', 'penerimaan.maksimal_penyimpanan',
+          'pengeluaran.tanggal_keluar', 'vendors.name as vendors_name',
+          'pengeluaran.jumlah_limbah_keluar',
+          'pengeluaran.bukti_nomor_dokumen',
+          'sisa.sisa_akhir',
+          'sisa.jenis_transaksi')
+          ->when(
+            $jenis_limbah != '',
+            function ($query) use ($jenis_limbah){
+                // Add additional conditions or other where clauses if needed
+                return $query->where('jenis_limbah.id',$jenis_limbah);
+            }
+          )
+          ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
+          ->whereNotNull('sisa.id')
+          // ->where(function ($query) use ($start_date_limbah_keluar,$end_date_limbah_keluar){
+          //   $query->whereNotNull('pengeluaran.tanggal_keluar')
+          //         ->where('title', '=', 'Admin');
+          // })
+          ->when(
+            function ($query) {
+              return $query->whereNotNull('pengeluaran.tanggal_keluar');
+            },
+            function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
+                // Add additional conditions or other where clauses if needed
+                return $query->whereBetween('pengeluaran.tanggal_keluar',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
+            }
+          )
+          ->when(
+            function ($query) {
+              return $query->orWhereNotNull('penerimaan.tanggal_masuk');
+            },
+            function ($query) use ($start_date_limbah_masuk,$end_date_limbah_masuk){
+                // Add additional conditions or other where clauses if needed
+                return $query->whereBetween('penerimaan.tanggal_masuk',[$start_date_limbah_masuk,$end_date_limbah_masuk]);
+            }
+          )
+          ->when(
+            $jenis_limbah != '',
+            function ($query) use ($jenis_limbah){
+                // Add additional conditions or other where clauses if needed
+                return $query->where('jenis_limbah.id',$jenis_limbah);
+            }
+          )
+          ->where('jenis_limbah.name', 'like', '%' .$searchValue . '%')
+          ->whereNotNull('sisa.id')
           ->leftJoin('jenis_limbah','sisa.jenis_limbah_id','=', 'jenis_limbah.id')
           ->leftJoin('penerimaan','sisa.id','=', 'penerimaan.sisa_id')
           ->leftJoin('sumber_limbah','sumber_limbah.id','=', 'penerimaan.sumber_limbah_id')
@@ -164,14 +222,14 @@ class ReportController extends Controller
              "sumber_limbah_name" => $sumber_limbah_name,
              "jumlah_limbah_masuk" => $jumlah_limbah_masuk,
              "maksimal_penyimpanan" => $maksimal_penyimpanan != '' ? date("d-M-Y",strtotime($maksimal_penyimpanan)) : '',
-             "tanggal_keluar" => $tanggal_keluar != '' ? date("d-M-Y",strtotime($tanggal_keluar)) : '',  
+             "tanggal_keluar" => $tanggal_keluar != '' ? date("d-M-Y",strtotime($tanggal_keluar)) : '',
              "vendors_name" => $vendors_name,
              "jumlah_limbah_keluar" => $jumlah_limbah_keluar,
              "bukti_nomor_dokumen" => $bukti_nomor_dokumen,
              "sisa_akhir" => $sisa_akhir,
            );
          }
-   
+
          $response = array(
            "draw" => intval($draw),
            "iTotalRecords" => $totalRecords,
@@ -182,11 +240,11 @@ class ReportController extends Controller
          exit;
        }
 
-       public function export($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar) 
+       public function export($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar)
       {
           return Excel::download(new ReportExport($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar), 'report_'.date("Y-m-d").'.xlsx');
       }
-       public function exportPerItem($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar,$jenis_limbah_id) 
+       public function exportPerItem($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar,$jenis_limbah_id)
       {
           return Excel::download(new ReportExportPerItem($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar,$jenis_limbah_id), 'report_per_item_'.date("Y-m-d").'.xlsx');
       }

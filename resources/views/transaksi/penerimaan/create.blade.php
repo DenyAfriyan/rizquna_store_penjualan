@@ -42,7 +42,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <label for="jumlah_limbah_masuk">
-                                    Jumlah Limbah Masuk
+                                    Jumlah Limbah Masuk (kg)
                                 </label>
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="jumlah_limbah_masuk" name="jumlah_limbah_masuk" placeholder="Contoh : 10">
@@ -59,7 +59,7 @@
                                 <input type="datetime-local" class="form-control" id="maksimal_penyimpanan" name="maksimal_penyimpanan">
                             </div>
                         </div>
-                        
+
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -78,6 +78,6 @@ $(document).ready(function() {
     $('#sumber_limbah_id').select2({
         theme: "classic"
     });
-}); 
+});
 </script>
 @endsection

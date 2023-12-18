@@ -96,27 +96,33 @@
       function cb_limbah_masuk(start_limbah_masuk, end_limbah_masuk) {
           start_date_limbah_masuk = start_limbah_masuk.format('YYYY-MM-DD')
           end_date_limbah_masuk = end_limbah_masuk.format('YYYY-MM-DD')
-          
+
           $('#reportrange-tanggalmasuk span').html(start_limbah_masuk.format('D MMMM YYYY') + ' - ' + end_limbah_masuk.format('D MMMM YYYY'));
       }
-      function cb_limbah_keluar(start_limbah_keluar, end_limbah_keluar) {
-          start_date_limbah_keluar = start_limbah_keluar.format('YYYY-MM-DD')
-          end_date_limbah_keluar = end_limbah_keluar.format('YYYY-MM-DD')
-          
-          $('#reportrange-tanggalkeluar span').html(start_limbah_keluar.format('D MMMM YYYY') + ' - ' + end_limbah_keluar.format('D MMMM YYYY'));
-      }
+    //   function cb_limbah_keluar(start_limbah_keluar, end_limbah_keluar) {
+    //       start_date_limbah_keluar = start_limbah_keluar.format('YYYY-MM-DD')
+    //       end_date_limbah_keluar = end_limbah_keluar.format('YYYY-MM-DD')
+
+    //       $('#reportrange-tanggalkeluar span').html(start_limbah_keluar.format('D MMMM YYYY') + ' - ' + end_limbah_keluar.format('D MMMM YYYY'));
+    //   }
       $('#reportrange-tanggalmasuk').on('apply.daterangepicker', function (ev, picker) {
           table.ajax.url("{{url('report-datatable')}}?start_date_limbah_masuk="
          +start_date_limbah_masuk+"&end_date_limbah_masuk="+end_date_limbah_masuk+"&start_date_limbah_keluar="
-         +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar);
-          table.ajax.reload(null, false); 
+         +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar+"&jenis_limbah="+$('#filter-item').val());
+          table.ajax.reload(null, false);
       });
-      $('#reportrange-tanggalkeluar').on('apply.daterangepicker', function (ev, picker) {
-          table.ajax.url("{{url('report-datatable')}}?start_date_limbah_masuk="
+      $('#filter-item').on('change',function(){
+        table.ajax.url("{{url('report-datatable')}}?start_date_limbah_masuk="
          +start_date_limbah_masuk+"&end_date_limbah_masuk="+end_date_limbah_masuk+"&start_date_limbah_keluar="
-         +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar);
-          table.ajax.reload(null, false); 
-      });
+         +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar+"&jenis_limbah="+$('#filter-item').val());
+          table.ajax.reload(null, false);
+      })
+    //   $('#reportrange-tanggalkeluar').on('apply.daterangepicker', function (ev, picker) {
+    //       table.ajax.url("{{url('report-datatable')}}?start_date_limbah_masuk="
+    //      +start_date_limbah_masuk+"&end_date_limbah_masuk="+end_date_limbah_masuk+"&start_date_limbah_keluar="
+    //      +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar);
+    //       table.ajax.reload(null, false);
+    //   });
 
       $('#reportrange-tanggalmasuk').daterangepicker({
           startDate: start_limbah_masuk,
@@ -135,32 +141,32 @@
           }
         }, cb_limbah_masuk);
 
-      $('#reportrange-tanggalkeluar').daterangepicker({
-          startDate: start_limbah_keluar,
-          endDate: end_limbah_keluar,
-          ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Q1': [moment().quarter(1).startOf('quarter'), moment().quarter(1).endOf('quarter')],
-            'Q2': [moment().quarter(2).startOf('quarter'), moment().quarter(2).endOf('quarter')],
-            'Q3': [moment().quarter(3).startOf('quarter'), moment().quarter(3).endOf('quarter')],
-            'Q4': [moment().quarter(4).startOf('quarter'), moment().quarter(4).endOf('quarter')],
-            'This Year': [moment().startOf('year'), moment().endOf('year')],
-          }
-        }, cb_limbah_keluar);
+    //   $('#reportrange-tanggalkeluar').daterangepicker({
+    //       startDate: start_limbah_keluar,
+    //       endDate: end_limbah_keluar,
+    //       ranges: {
+    //         'Today': [moment(), moment()],
+    //         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //         'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //         'Q1': [moment().quarter(1).startOf('quarter'), moment().quarter(1).endOf('quarter')],
+    //         'Q2': [moment().quarter(2).startOf('quarter'), moment().quarter(2).endOf('quarter')],
+    //         'Q3': [moment().quarter(3).startOf('quarter'), moment().quarter(3).endOf('quarter')],
+    //         'Q4': [moment().quarter(4).startOf('quarter'), moment().quarter(4).endOf('quarter')],
+    //         'This Year': [moment().startOf('year'), moment().endOf('year')],
+    //       }
+    //     }, cb_limbah_keluar);
 
-        cb_limbah_keluar(start_limbah_keluar, end_limbah_keluar);
+        // cb_limbah_keluar(start_limbah_keluar, end_limbah_keluar);
         cb_limbah_masuk(start_limbah_masuk, end_limbah_masuk);
-        
+
         table = $('#DataGrid1').DataTable({
          processing: true,
          serverSide: true,
          ajax: "{{url('report-datatable')}}?start_date_limbah_masuk="
          +start_date_limbah_masuk+"&end_date_limbah_masuk="+end_date_limbah_masuk+"&start_date_limbah_keluar="
-         +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar,
+         +start_date_limbah_keluar+"&end_date_limbah_keluar="+end_date_limbah_keluar+"&jenis_limbah="+$('#filter-item').val(),
          columns: [
                 {
                     data: "sisa_id",
@@ -171,11 +177,11 @@
                 },
                 { data: "jenis_limbah_name"},
                 { data: "tanggal_masuk"},
-                { data: "jumlah_limbah_masuk"},
                 { data: "sumber_limbah_name"},
+                { data: "jumlah_limbah_masuk"},
                 { data: "maksimal_penyimpanan"},
                 { data: "tanggal_keluar"},
-                { data: "jumlah_limbah_keluar"},  
+                { data: "jumlah_limbah_keluar"},
                 { data: "vendors_name"},
                 { data: "bukti_nomor_dokumen"},
                 { data: "sisa_akhir"},
@@ -202,7 +208,7 @@
         }else{
           alert("Harap Pilih jenis limbah terlebih dahulu");
         }
-        
+
 	  }
 </script>
 @endsection
