@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        abort_if(Gate::denies('user management'), 403);
+        abort_if(Gate::denies('User Management'), 403);
         $title = 'Users';
         $users = User::all();
         $dataToView = ['title','users'];
@@ -28,7 +28,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        abort_if(Gate::denies('user management'), 403);
+        abort_if(Gate::denies('User Management'), 403);
         $title = 'Users';
         $role = Role::all()->pluck('id','name');
         $dataToView = ['title','role'];
@@ -40,7 +40,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        abort_if(Gate::denies('user management'), 403);
+        abort_if(Gate::denies('User Management'), 403);
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:users|max:255',
             'email' => 'required|unique:users|max:255',
@@ -72,12 +72,12 @@ class UserController extends Controller
      */
     public function edit(int $id)
     {
-        abort_if(Gate::denies('user management'), 403);
+        abort_if(Gate::denies('User Management'), 403);
         $title = 'Users';
         $user = User::findOrFail($id);
         $dataToView = ['title','user    '];
         return view('usermanagement.users.edit',compact($dataToView));
-        
+
     }
 
     /**
@@ -85,7 +85,7 @@ class UserController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        abort_if(Gate::denies('user management'), 403);
+        abort_if(Gate::denies('User Management'), 403);
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:users|max:255',
         ]);
@@ -94,7 +94,7 @@ class UserController extends Controller
         }
         $users = User::where('id',$id)->update(['name' => $request->input('name')]);
         return redirect('user-management/user')->with('message','Data Berhasil Diupdate');
- 
+
     }
 
     /**
@@ -102,11 +102,11 @@ class UserController extends Controller
      */
     public function destroy(int $id)
     {
-        abort_if(Gate::denies('user management'), 403);
+        abort_if(Gate::denies('User Management'), 403);
         $users = User::findOrFail($id);
- 
+
         $users->delete();
-        
+
         return redirect()->back()->with('message','Data Berhasil Dihapus');
     }
 }

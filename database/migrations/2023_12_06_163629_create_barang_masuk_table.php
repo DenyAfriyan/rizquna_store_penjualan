@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vendors', function (Blueprint $table) {
+        Schema::create('barang_masuk', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('barang_id')->constrained(table:'barang');
+            $table->integer('qty');
+            $table->string('nama_karyawan');
             $table->timestamps();
         });
     }

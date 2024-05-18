@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\ReportExport;
 use App\Exports\ReportExportPerItem;
+use App\Exports\ReportPenjualanExport;
+use App\Models\Barang;
+use App\Models\BarangKeluar;
 use App\Models\JenisLimbah;
 use App\Models\Penerimaan;
 use App\Models\Sisa;
@@ -16,9 +19,12 @@ class ReportController extends Controller
 {
     public function index(){
         $title = "Report";
-        $jenis_limbah_id = JenisLimbah::all()->pluck('id','name');
+        $barangKeluar = BarangKeluar::select('barang_id', DB::raw('SUM(qty) as total_keluar'),DB::raw('SUM(margin) as total_margin'))
+            ->groupBy('barang_id')
+            ->get();
+        $barang = Barang::all();
 
-        return view('report.index',compact('title','jenis_limbah_id'));
+        return view('report.index',compact('title','barang','barangKeluar'));
     }
 
     public function datatable(Request $request){
@@ -240,6 +246,9 @@ class ReportController extends Controller
          exit;
        }
 
+       public function exportPenjualan(){
+            return Excel::download(new ReportPenjualanExport, 'report_penjualan_'.date("Y-m-d").'.xlsx');
+       }
        public function export($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar)
       {
           return Excel::download(new ReportExport($start_date_limbah_masuk,$end_date_limbah_masuk,$start_date_limbah_keluar, $end_date_limbah_keluar), 'report_'.date("Y-m-d").'.xlsx');

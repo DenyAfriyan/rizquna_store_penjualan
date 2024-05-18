@@ -24,8 +24,7 @@
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 </head>
 
-<body class="" style="background-image: url('{{ asset('assets/soft-ui-dashboard-main/assets/img/tp244-bg1-02.jpg') }}');background-size: cover;
-background-repeat: no-repeat;height: 100vh;">
+<body class="" >
   {{-- <div class="container position-sticky z-index-sticky top-0">
     <div class="row justify-content-center">
       <div class="col-12">
@@ -34,14 +33,23 @@ background-repeat: no-repeat;height: 100vh;">
   </div> --}}
   <main class="main-content mt-0" >
     <section>
-      <div class="page-header min-vh-75">
+      <div class="page-header">
         <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
-              <div class="card card-plain mt-8">
+          <div class="row justify-content-center mt-7">
+            <div class="col-xl-6 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+                <div class="card card-plain">
+                  <div class="card-header pb-0 text-left bg-transparent">
+
+                  </div>
+                  <div class="card-body">
+                      <img src="{{ asset('assets/img/RIZQUNA_logo1.jpg') }}" class="img-fluid rounded mb-3" alt="">
+                  </div>
+                </div>
+              </div>
+            <div class="col-xl-6 col-lg-5 col-md-6 d-flex flex-column m-auto">
+              <div class="card card-plain">
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h4 class="mb-3 text-center text-gradient text-dark">Waste Application</h4>
-                  <img src="{{ asset('assets/soft-ui-dashboard-main/assets/img/logo-fdr.jpg') }}" class="img-fluid rounded mb-3" alt="">
+                  <h4 class="mb-3 text-center text-gradient text-dark">Login</h4>
                   @if($errors->any())
                       <div class="alert alert-danger p-1">
                           <ul>
@@ -68,7 +76,7 @@ background-repeat: no-repeat;height: 100vh;">
                       <label class="form-check-label" for="rememberMe">Remember me</label>
                     </div>
                     <div class="text-center">
-                      <button type="submit" class="btn bg-gradient-danger w-100 mt-4 mb-0">Sign in</button>
+                      <button type="submit" class="btn bg-gradient-primary w-100 mt-4 mb-0">Sign in</button>
                     </div>
                   </form>
                 </div>

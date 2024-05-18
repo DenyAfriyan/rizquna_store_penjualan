@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sisa', function (Blueprint $table) {
+        Schema::create('barang_keluar', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jenis_limbah_id')->constrained(table:'jenis_limbah');
-            $table->integer('sisa_akhir')->default(0);
-            $table->enum('jenis_transaksi',['Penerimaan','Pengeluaran']);
+            $table->foreignId('barang_id')->constrained(table:'barang');
+            $table->integer('qty');
+            $table->double('margin')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sisa');
+        Schema::dropIfExists('vendors');
     }
 };

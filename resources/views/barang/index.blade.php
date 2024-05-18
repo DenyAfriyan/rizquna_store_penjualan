@@ -18,22 +18,52 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Name</th>
+                        <th>Nama Barang</th>
+                        <th>Jenis Barang</th>
+                        <th>Deskripsi Barang</th>
+                        <th>Merek</th>
+                        <th>Ukuran</th>
+                        <th>Harga Satuan</th>
+                        <th>Gambar</th>
+                        <th>Stok</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                  @if (count($jenis_limbah) > 0)
-                    @foreach ($jenis_limbah as $key => $row)
+                  @if (count($barang) > 0)
+                    @foreach ($barang as $key => $row)
                     <tr>
                       <td class="align-middle text-center" style="width: 10%">
                         <span class="text-dark">{{ $key + 1 }}</span>
                       </td>
                       <td class="align-middle">
-                        <span class="text-dark">{{ $row->name }}</span>
+                        <span class="text-dark">{{ $row->nama_barang }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-dark">{{ $row->jenis_barang }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-dark">{{ $row->deskripsi_barang }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-dark">{{ $row->merek }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-dark">{{ $row->ukuran }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-dark">{{ $row->harga_satuan }}</span>
+                      </td>
+                      <td class="align-middle">
+                        @php
+                            echo '<a href="'.url("/data_file_barang")."/".$row->gambar_barang.'" target="_blank"><img src="'.url('/data_file_barang')."/".$row->gambar_barang.'" width="50px" height="50px"></a>';
+                        @endphp
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-dark">{{ $row->stok }}</span>
                       </td>
                       <td class="align-middle" style="width: 20%">
-                        <a href="{{ route('barang.edit', ['jenis_limbah' => $row->id]) }}" class="btn btn-info m-0">
+                        <a href="{{ route('barang.edit', ['barang' => $row->id]) }}" class="btn btn-info m-0">
                           <i class="fa fa-pen"></i>
                         </a>
                         <form action="{{ route('barang.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin?');" style="display: inline-block;">
@@ -66,7 +96,7 @@
                 'previous': '<i class="fa fa-toggle-left"></i>',
                 'next': '<i class="fa fa-toggle-right"></i>'
                 }
-            }
+            },
         });
     })
 </script>
