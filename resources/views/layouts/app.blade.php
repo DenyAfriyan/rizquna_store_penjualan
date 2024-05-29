@@ -32,7 +32,7 @@
 <body class="g-sidenav-show  bg-gray-100">
   @include('layouts.sidebar')
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
+    <!-- Navbar --> 
     @include('layouts.header')
     <!-- End Navbar -->
     <div class="container-fluid py-4" style="min-height: 75vh">
